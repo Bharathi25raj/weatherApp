@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Roboto", sans-serif;
+        }
+
+
+        .container{
+            height: 85vh;
+            width: 100%;
+            background-color: #00151D;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .weather{
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+
+        .weather div{
+            margin: 0.75rem;
+        }
+
+        .weather p{
+            font-size: 2rem;
+        }
+
+        .weather span{
+            font-size: 0.75rem;
+        }
+
+        nav{
+            height: 15vh;
+            width: 100%;
+            background-color: #26363D;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .weather img{
+            width: 2rem;
+        }
+
+        .searchField{
+            width: 50vw;
+            border: none;
+            outline: none;
+            font-size: 1.1rem;
+            background: transparent;
+            color: white;
+            border-bottom: 2px solid white;
+            padding: 1rem 0;
+        }
+
+        nav button{
+            padding: 0.75rem 2.75rem;
+            color: white;
+            background-color: #73D5CF;
+            border: none;
+            margin-left: 1rem;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="weather">
+            <div class="temp">20</div>
+            <div class="time-location">
+                <p>Location</p>
+                <span>Random date and time</span>
+            </div>
+            <div class="weather-condition">
+                <p><img src="" alt=""></p>
+                <span>condition</span>
+            </div>
+        </div>
+    </div>
+    <nav>
+       <form>
+            <input type="text" placeholder="Search Location" class="searchField">
+            <button type="submit">Search</button>
+       </form>
+    </nav>
+
+
+    <script>
+
+        // homework: 1. Make request on click of a button
+        // 2. make request with the value we have in input
+        // 3. try with asynch and await instead of then and catch
+        let button = document.querySelector('nav button');
+
+        let input = document.querySelector('.searchField');
+
+        let form = document.querySelector('form');
+
+        let temperature = document.querySelector('.temp');
+
+        let city = document.querySelector('.time-location p');
+        let timeDate = document.querySelector('.time-location span');
+
+        let cond = document.querySelector('.weather-condition span');
+        let condImg = document.querySelector('.weather-condition img');
+
+        // button.addEventListener('click', function(e){
+        //     let val = input.value;
+            //console.log(val);
+        // });
+
+        form.addEventListener('submit', function(e){
+            e.preventDefault(); //prevents page from refresh after submitting the form
+            let val = input.value;
+
+            let apiUrl = "http://api.weatherapi.com/v1/current.json?key=7c33d646a3c140abaed55707232112&q=" + val + "&aqi=no";
+
+            //Make a GET request
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data);
+                    temperature.innerText = data.current.temp_c;
+                    city.innerText = data.location.name;
+                    timeDate.innerText = data.location.localtime;
+                    cond.innerText = data.current.condition.text;
+                    condImg.src = "https:" + data.current.condition.icon;
+                    console.log("https:" + data.current.condition.icon);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("Sorry for the inconvenience, please try again with the correct name");
+            });
+            
+        })
+    </script>
+</body>
+</html>
